@@ -10,7 +10,7 @@ function Write-Info($msg) { Write-Host "[+] $msg" -ForegroundColor Cyan }
 Push-Location $PSScriptRoot\..
 try {
   $py = Join-Path $PWD ".venv/Scripts/python.exe"
-  $nodeCmd = (Get-Command yarn -ErrorAction SilentlyContinue) ? 'yarn' : 'npm'
+  if (Get-Command yarn -ErrorAction SilentlyContinue) { $nodeCmd = 'yarn' } else { $nodeCmd = 'npm' }
 
   Write-Info "vLLM API başlatılıyor ($Model)"
   $cfg = (Get-Content .\configs\config.toml -Raw)

@@ -1,0 +1,26 @@
+[llm]
+base_url = "http://localhost:8000/v1"
+model    = "openai/gpt-oss-20b"  # gpt-oss-20b, gpt-120b (VRAM yüksek)
+api_key  = "local"
+
+[vllm]
+dtype = "float16"
+gpu_memory_utilization = 0.90
+max_num_batched_tokens = 8192
+# Çoklu GPU için örnek: tensor_parallel_size = 2
+
+[hud]
+ws_host = "127.0.0.1"
+ws_port = 8765
+
+[rag]
+index_paths = [
+  "C:/Users/%USERNAME%/Documents",
+  "C:/Users/%USERNAME%/Downloads"
+]
+embedding_model = "sentence-transformers/all-MiniLM-L6-v2"
+
+[audio]
+tts_voice = "tr-TR-ArdaNeural"
+# Tesseract için özel yol gerekirse belirtin
+# tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
