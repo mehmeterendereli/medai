@@ -11,7 +11,11 @@ class Agent:
     def __init__(self, ws_host: str, ws_port: int, llm_cfg: LLMConfig, registry: ToolsRegistry | None = None) -> None:
         self.ws_host = ws_host
         self.ws_port = ws_port
-        self.llm = NLPClient(llm_cfg)
+        # LLM opsiyonel: base_url boş ise client oluşturma
+        try:
+            self.llm = NLPClient(llm_cfg) if llm_cfg.base_url else None
+        except Exception:
+            self.llm = None
         self.registry = registry or build_default_registry()
         self.state = StateContext()
 
@@ -44,9 +48,10 @@ class Agent:
     async def execute_goal(self, ws, goal: str) -> None:
         self.state.set(AgentState.EXECUTING)
         await self._ws_emit(ws, {"type": "state", "value": self.state.current})
-        # Basit plan: sadece yankıla
+        # Basit plan: LLM yoksa yankı; varsa kısa özet plan (dummy)
         plan: List[str] = [f"Görev alındı: {goal}"]
         await self._ws_emit(ws, {"type": "plan", "steps": plan})
-        await self._ws_emit(ws, {"type": "result", "ok": True, "summary": f"Tamamlandı: {goal}"})
+        summary = f"Tamamlandı (LLM kapalı): {goal}" if self.llm is None else f"Tamamlandı: {goal}"
+        await self._ws_emit(ws, {"type": "result", "ok": True, "summary": summary})
         self.state.set(AgentState.IDLE)
         await self._ws_emit(ws, {"type": "state", "value": self.state.current})

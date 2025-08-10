@@ -1,5 +1,4 @@
 from typing import Callable, Dict, Any
-from ..tools import fs_ops, os_control, browser, ocr, binary_ops, net
 
 
 class ToolsRegistry:
@@ -20,15 +19,45 @@ class ToolsRegistry:
 
 def build_default_registry() -> ToolsRegistry:
     registry = ToolsRegistry()
-    registry.register("filesystem.search", fs_ops.filesystem_search)
-    registry.register("filesystem.hash", fs_ops.filesystem_hash)
-    registry.register("os.input_text", os_control.os_input_text)
-    registry.register("os.keypress", os_control.os_keypress)
-    registry.register("browser.goto", browser.browser_goto)
-    registry.register("browser.fill", browser.browser_fill)
-    registry.register("ocr.read", ocr.ocr_read)
-    registry.register("binary.filetype", binary_ops.binary_filetype)
-    registry.register("binary.pe_info", binary_ops.binary_pe_info)
-    registry.register("net.http_get", net.http_get)
-    registry.register("net.download", net.download)
+    # Araçları tembel (lazy) import et; eksik bağımlılıklar yüzünden çökme olmasın
+    try:
+        from ..tools import fs_ops
+        registry.register("filesystem.search", fs_ops.filesystem_search)
+        registry.register("filesystem.hash", fs_ops.filesystem_hash)
+    except Exception:
+        pass
+
+    try:
+        from ..tools import os_control
+        registry.register("os.input_text", os_control.os_input_text)
+        registry.register("os.keypress", os_control.os_keypress)
+    except Exception:
+        pass
+
+    try:
+        from ..tools import browser
+        registry.register("browser.goto", browser.browser_goto)
+        registry.register("browser.fill", browser.browser_fill)
+    except Exception:
+        pass
+
+    try:
+        from ..tools import ocr
+        registry.register("ocr.read", ocr.ocr_read)
+    except Exception:
+        pass
+
+    try:
+        from ..tools import binary_ops
+        registry.register("binary.filetype", binary_ops.binary_filetype)
+        registry.register("binary.pe_info", binary_ops.binary_pe_info)
+    except Exception:
+        pass
+
+    try:
+        from ..tools import net
+        registry.register("net.http_get", net.http_get)
+        registry.register("net.download", net.download)
+    except Exception:
+        pass
     return registry

@@ -45,8 +45,10 @@ async def main():
     cfg = toml.load(str(Path(__file__).resolve().parents[1] / 'configs' / 'config.toml'))
     ws_host = cfg.get('hud', {}).get('ws_host', '127.0.0.1')
     ws_port = int(cfg.get('hud', {}).get('ws_port', 8765))
+    llm_enabled = bool(cfg.get('llm', {}).get('enabled', False))
+    base_url = cfg.get('llm', {}).get('base_url', '') if llm_enabled else ''
     llm_cfg = LLMConfig(
-        base_url=cfg.get('llm', {}).get('base_url', 'http://localhost:8000/v1'),
+        base_url=base_url,
         model=cfg.get('llm', {}).get('model', 'openai/gpt-oss-20b'),
         api_key=cfg.get('llm', {}).get('api_key', 'local'),
     )
