@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+logs/
+data/chroma/
+data/cache/
+overlay-ui/out/
+overlay-ui/dist/
+overlay-ui/node_modules/
+.DS_Store

@@ -1,0 +1,21 @@
+[exclude.paths]
+globs = [
+  "C:\\Users\\*\\AppData\\**",
+  "C:\\Windows\\**",
+  "C:\\ProgramData\\**"
+]
+
+[exclude.extensions]
+list = [".kdbx",".pfx",".pem",".key",".dat",".pst",".ost"]
+
+[exclude.regex]
+tckn  = "\\b\\d{11}\\b"
+iban  = "\\bTR\\d{24}\\b"
+card  = "\\b(?:\\d[ -]*?){13,19}\\b"
+email = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+phone = "\\b\\+?\\d{10,15}\\b"
+
+[policy]
+store_embeddings_only = true
+hash_raw_files        = true
+block_on_pii_score    = 0.8

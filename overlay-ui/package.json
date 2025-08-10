@@ -1,0 +1,16 @@
+{
+  "name": "jarvis-overlay",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "echo 'No build step yet'"
+  },
+  "devDependencies": {
+    "electron": "28.2.0"
+  },
+  "dependencies": {
+    "ws": "8.17.0"
+  }
+}
