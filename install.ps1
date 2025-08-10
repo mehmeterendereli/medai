@@ -4,7 +4,7 @@ param(
   [string]$BaseUrl = "http://localhost:8000/v1",
   [switch]$UseYarn = $false,
   [switch]$SkipPlaywright = $false,
-  [switch]$InstallTorch = $true,
+  [switch]$InstallTorch = $false,
   [string]$TorchIndexUrl = "https://download.pytorch.org/whl/cu121"
 )
 
@@ -78,8 +78,8 @@ try {
   New-Item -ItemType Directory -Force -Path ./logs | Out-Null
 
   Write-Info "Model ayarı configs/config.toml içine yazılıyor"
-  (Get-Content ./configs/config.toml) -replace 'model\s*=\s*".*"', "model = \"$Model\"" | Set-Content ./configs/config.toml
-  (Get-Content ./configs/config.toml) -replace 'base_url\s*=\s*".*"', "base_url = \"$BaseUrl\"" | Set-Content ./configs/config.toml
+  (Get-Content ./configs/config.toml) -replace 'model\s*=\s*".*"', "model = `"$Model`"" | Set-Content ./configs/config.toml
+  (Get-Content ./configs/config.toml) -replace 'base_url\s*=\s*".*"', "base_url = `"$BaseUrl`"" | Set-Content ./configs/config.toml
 
   Write-Info "Kurulum tamamlandı. Çalıştırmak için:"
   Write-Host "  ./startup/start_agent.ps1 -Model '$Model'" -ForegroundColor Green
