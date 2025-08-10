@@ -11,6 +11,13 @@ Push-Location $PSScriptRoot\..
 try {
   $py = Join-Path $PWD ".venv/Scripts/python.exe"
   if (Get-Command yarn -ErrorAction SilentlyContinue) { $nodeCmd = 'yarn' } else { $nodeCmd = 'npm' }
+  $hasPython = Test-Path $py
+  # Taşınabilir Node/npm (./.tools/node/node-*-win-x64) var mı kontrol et
+  $portableNpm = $null
+  try {
+    $portableNodeDir = Get-ChildItem -Path (Join-Path $PWD ".tools/node") -Directory -Filter "node-*-win-x64" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($portableNodeDir) { $portableNpm = Join-Path $portableNodeDir.FullName "npm.cmd" }
+  } catch {}
 
   $cfg = (Get-Content .\configs\config.toml -Raw)
   $llmEnabled = $false
@@ -36,13 +43,28 @@ try {
 
   Write-Info "Overlay HUD başlatılıyor"
   Push-Location .\overlay-ui
-  if ($nodeCmd -eq 'yarn') { Start-Process -FilePath yarn -ArgumentList "start" -WindowStyle Hidden }
-  else { Start-Process -FilePath npm -ArgumentList "run start" -WindowStyle Hidden }
+  if ($nodeCmd -eq 'yarn') {
+    Start-Process -FilePath yarn -ArgumentList "start" -WindowStyle Hidden
+  } else {
+    if ($portableNpm -and (Test-Path $portableNpm)) {
+      Write-Info "npm install (portable) çalıştırılıyor"
+      Start-Process -FilePath $portableNpm -ArgumentList "install" -WindowStyle Hidden -Wait
+      Write-Info "HUD başlatılıyor (npm run start)"
+      Start-Process -FilePath $portableNpm -ArgumentList "run start" -WindowStyle Hidden
+    } else {
+      Write-Info "npm (sistem) ile HUD başlatılıyor"
+      Start-Process -FilePath npm -ArgumentList "run start" -WindowStyle Hidden
+    }
+  }
   Pop-Location
   Start-Sleep -Seconds 2
 
-  Write-Info "Python Agent (boot) başlatılıyor"
-  Start-Process -FilePath $py -ArgumentList "-m jarvis.core.boot" -WindowStyle Hidden
+  if ($hasPython) {
+    Write-Info "Python Agent (boot) başlatılıyor"
+    Start-Process -FilePath $py -ArgumentList "-m jarvis.core.boot" -WindowStyle Hidden
+  } else {
+    Write-Info "Python bulunamadı (.venv). Ajan başlatılmadı (LLM kapalı HUD sadece)."
+  }
 
   Write-Info "Tüm servisler başlatıldı. Kill-switch: Ctrl+Alt+Shift+J"
 }
