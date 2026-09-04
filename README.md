@@ -1,47 +1,18 @@
-# Windows Jarvis (Local GPT-OSS Agent)
+# medai
 
-Bu depo, Windows 10/11 üzerinde yerel LLM (vLLM, CUDA) + OS/Web otomasyon + RAG + saydam HUD (Electron) ile çalışan bir Jarvis aracını içerir.
+> **Archived historical prototype. This repository is not maintained or supported.**
 
-## Hızlı Başlangıç (Tek Komut Kurulum)
+This repository explored a Windows-local automation service with a Python orchestration layer and an Electron overlay. The snapshot includes operating-system, browser, OCR, audio, and local-model integration experiments.
 
-PowerShell (Administrator) açın:
+## Archive status
 
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass -Force
-cd jarvis
-./install.ps1 -Model "openai/gpt-oss-20b" -UseYarn:$true
-```
+- Installation and startup scripts have not been revalidated against current Windows, Python, CUDA, Node.js, or model-server versions.
+- The repository has no automated tests, hosted CI runs, tags, or releases.
+- Broad operating-system and browser automation requires a fresh security review before evaluation.
+- Example configuration must not be treated as a production privacy or access-control policy.
 
-Kurulum sonrası başlatmak için:
+The repository is retained only as a historical implementation snapshot. There is no designated maintained successor; current public work is listed in the [open-source portfolio](https://www.mehmeterendereli.com/en/open-source).
 
-```powershell
-./startup/start_agent.ps1 -Model "openai/gpt-oss-20b"
-```
+## License
 
-> Not: Daha büyük model (örn. GPT-120B) için `-Model` parametresini değiştirip `--tensor-parallel-size` gibi vLLM bayraklarını `configs/config.toml` içinden ayarlayabilirsiniz. VRAM gereksinimi yüksektir.
-
-## Gereksinimler
-- Windows 10/11 (x64)
-- NVIDIA Driver + CUDA 12.1+ + cuDNN
-- Python 3.11 (x64), Git, Node.js 20+ (Yarn opsiyonel)
-
-Kurulum betiği eksik olanları `winget` ile yüklemeyi dener.
-
-## Yapı
-
-- `core/`: Orkestratör, durum makinesi, LLM istemci, RAG, ses
-- `tools/`: OS, tarayıcı, FS, OCR vb. araçlar
-- `overlay-ui/`: Electron tabanlı saydam HUD
-- `configs/`: Konfigürasyon ve kişisel veri filtreleri
-- `startup/`: Başlatma ve zamanlayıcı betikleri
-- `data/`, `logs/`: Çalışma verileri
-
-## Çalıştırma
-1. vLLM API ayağa kalkar (OpenAI uyumlu `/v1/chat/completions`).
-2. Python ajan WebSocket sunucusu (HUD ile konuşur) ve araç kayıtlarını başlatır.
-3. HUD üzerinden açılış onayı gelir; onay sonrası arka planda çalışır.
-
-## Notlar
-- Tesseract OCR için `winget install -e --id UB-Mannheim.TesseractOCR` önerilir.
-- `configs/personal_filters.toml` ile PII filtreleme aktif edilir.
-- Görev zamanlayıcı kaydı için `startup/schedule.xml` ve ilgili komutlar mevcuttur.
+No license file is present. Public visibility does not grant permission to copy, modify, or redistribute the source.
